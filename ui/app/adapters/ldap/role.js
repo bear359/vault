@@ -32,7 +32,7 @@ export default class LdapRoleAdapter extends NamedPathAdapter {
     return this.getURL(backend, this.pathForRoleType(type), name);
   }
 
-  async query(store, type, query, recordArray, options) {
+  async NOquery(store, type, query, recordArray, options) {
     const { showPartialError } = options.adapterOptions || {};
     const { backend } = query;
     let roles = [];
@@ -74,6 +74,27 @@ export default class LdapRoleAdapter extends NamedPathAdapter {
     // must return an object in this shape for lazyPaginatedQuery to function
     // changing the responsePath or providing the extractLazyPaginatedData serializer method causes normalizeResponse to return data: [undefined]
     return { data: { keys: sortObjects(roles, 'name') } };
+  }
+
+  async query(store, type, query, recordArray, options) {
+    const { showPartialError } = options?.adapterOptions || {};
+    const { backend } = query;
+    const errors = [];
+
+    const roleType = type.modelName.includes('static') ? 'static' : 'dynamic';
+    const url = this.getURL(backend, this.pathForRoleType(roleType));
+    try {
+      const roles = await this.ajax(url, 'GET', { data: { list: true } }).then((resp) => {
+        // this has to happen here instead of the serializer because we need backend and type
+        // (the LIST response only returns an array of role name strings)
+        return resp.data.keys.map((name) => ({ id: name, name, backend }));
+      });
+      // must return an object in this shape for lazyPaginatedQuery to function
+      // changing the responsePath or providing the extractLazyPaginatedData serializer method causes normalizeResponse to return data: [undefined]
+      return { data: { keys: sortObjects(roles, 'name') } };
+    } catch (error) {
+      throw error;
+    }
   }
   queryRecord(store, type, query) {
     const { backend, name, type: roleType } = query;

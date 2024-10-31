@@ -21,6 +21,6 @@ export default class LdapRoleRoute extends Route {
   model(params: LdapRoleRouteParams) {
     const backend = this.secretMountPath.currentPath;
     const { name, type } = params;
-    return this.store.queryRecord('ldap/role', { backend, name, type });
+    return this.store.queryRecord(`ldap/role/${type}`, { backend, name, type });
   }
 }

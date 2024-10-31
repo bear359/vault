@@ -27,7 +27,7 @@
     {{/if}}
   </:toolbarActions>
 </TabPageHeader>
-
+{{log @roles}}
 {{#if @promptConfig}}
   <ConfigCta />
 {{else if (not @roles.meta.filteredTotal)}}
@@ -43,6 +43,7 @@
 {{else}}
   <div class="has-bottom-margin-s">
     {{#each @roles as |role|}}
+      {{log role}}
       <ListItem @linkPrefix={{this.mountPoint}} @linkParams={{array "roles.role.details" role.type role.name}} as |Item|>
         <Item.content>
           <Icon @name="user" />

@@ -24,7 +24,8 @@ export default class LdapRolesCreateRoute extends Route {
 
   model() {
     const backend = this.secretMountPath.currentPath;
-    return this.store.createRecord('ldap/role', { backend });
+    // the form defaults to static role type, so initialize with that
+    return this.store.createRecord('ldap/role/static', { backend });
   }
 
   setupController(

@@ -72,7 +72,7 @@ module.exports = function (environment) {
     };
   }
   if (environment !== 'production') {
-    ENV.APP.DEFAULT_PAGE_SIZE = 15;
+    ENV.APP.DEFAULT_PAGE_SIZE = 2;
   }
 
   ENV.welcomeMessage = process.env.UI_AUTH_WELCOME;

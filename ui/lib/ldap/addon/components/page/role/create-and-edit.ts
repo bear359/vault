@@ -14,8 +14,10 @@ import errorMessage from 'vault/utils/error-message';
 import type LdapRoleModel from 'vault/models/ldap/role';
 import { Breadcrumb, ValidationMap } from 'vault/vault/app-types';
 import type FlashMessageService from 'vault/services/flash-messages';
-import type RouterService from '@ember/routing/router-service';
 import type PaginationService from 'vault/services/pagination';
+import type RouterService from '@ember/routing/router-service';
+import type StoreService from 'vault/services/store';
+import type { HTMLElementEvent } from 'vault/forms';
 
 interface Args {
   model: LdapRoleModel;
@@ -32,10 +34,17 @@ export default class LdapCreateAndEditRolePageComponent extends Component<Args> 
   @service declare readonly flashMessages: FlashMessageService;
   @service('app-router') declare readonly router: RouterService;
   @service declare readonly pagination: PaginationService;
+  @service declare readonly store: StoreService;
 
   @tracked modelValidations: ValidationMap | null = null;
   @tracked invalidFormMessage = '';
   @tracked error = '';
+
+  @tracked newRecord: LdapRoleModel | null = null;
+
+  get model() {
+    return this.newRecord || this.args.model;
+  }
 
   get roleTypeOptions(): Array<RoleTypeOption> {
     return [
@@ -52,6 +61,16 @@ export default class LdapCreateAndEditRolePageComponent extends Component<Args> 
         value: 'dynamic',
       },
     ];
+  }
+
+  @action
+  handleTypeChange(event: HTMLElementEvent<HTMLInputElement>) {
+    const type = event.target.name;
+    const backend = this.args.model.backend;
+    this.newRecord = this.store.createRecord(`ldap/role/${type}`, { backend });
+    console.log(this.store.peekAll('ldap/role'));
+    console.log('static', this.store.peekAll('ldap/role/static'));
+    console.log('dynamic', this.store.peekAll('ldap/role/dynamic'));
   }
 
   @task

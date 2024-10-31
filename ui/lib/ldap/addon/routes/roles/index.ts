@@ -53,6 +53,7 @@ export default class LdapRolesRoute extends Route {
 
   model(params: LdapRolesRouteParams) {
     const backendModel = this.modelFor('application') as SecretEngineModel;
+
     return hash({
       backendModel,
       promptConfig: this.promptConfig,
@@ -66,6 +67,18 @@ export default class LdapRolesRoute extends Route {
         },
         { adapterOptions: { showPartialError: true } }
       ),
+      staticRoles: this.pagination.lazyPaginatedQuery('ldap/role/static', {
+        backend: backendModel.id,
+        page: Number(params.page) || 1,
+        pageFilter: params.pageFilter,
+        responsePath: 'data.keys',
+      }),
+      dynamicRoles: this.pagination.lazyPaginatedQuery('ldap/role/dynamic', {
+        backend: backendModel.id,
+        page: Number(params.page) || 1,
+        pageFilter: params.pageFilter,
+        responsePath: 'data.keys',
+      }),
     });
   }
 

@@ -5,8 +5,11 @@
 
 <Page::Roles
   @roles={{this.model.roles}}
+  @staticRoles={{this.model.staticRoles}}
+  @dynamicRoles={{this.model.dynamicRoles}}
   @promptConfig={{this.model.promptConfig}}
   @backendModel={{this.model.backendModel}}
   @breadcrumbs={{this.breadcrumbs}}
   @pageFilter={{this.pageFilter}}
 />
+{{log "INDEX MODEL" this.model}}

@@ -61,11 +61,14 @@
               @ariaLabel="Role"
               @placeholder="Select a role"
               @disallowNewItems={{true}}
-              @options={{@roles}}
+              @options={{this.roleOptions}}
+              {{!-- @shouldRenderName={{true}} --}}
               @selectLimit="1"
               @fallbackComponent="input-search"
               @onChange={{this.selectRole}}
               @renderInPlace={{true}}
+              @passObject={{true}}
+              @objectKeys={{array "id" "name" "type"}}
             />
             <div>
               <Hds::Button
